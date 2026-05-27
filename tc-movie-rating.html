@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TC MOVIE — ให้คะแนนภาพยนตร์</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-dim: #7a5f25;
+  --gold-bg: rgba(201,168,76,0.08);
+  --red: #b01c24;
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --text: #f0ece0;
+  --muted: #888;
+  --border: rgba(201,168,76,0.2);
+  --border-dim: rgba(255,255,255,0.07);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  position: sticky; top:0; z-index:100;
+  padding: 0 2rem;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 58px;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem; letter-spacing: 4px; color: var(--gold);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--text); }
+.nav-right { font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+/* HERO BANNER */
+.hero-banner {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px
+  );
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 0.68rem; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.8rem;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem,8vw,5rem);
+  letter-spacing: 6px; line-height: 1;
+}
+.hero-title span { color: var(--gold); }
+.hero-sub {
+  font-size: 0.82rem; letter-spacing: 2px; color: var(--muted);
+  text-transform: uppercase; margin-top: 0.8rem;
+}
+
+/* LAYOUT */
+.main-wrap {
+  max-width: 960px; margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 750px) {
+  .main-wrap { grid-template-columns: 1fr; }
+  .sidebar { order: -1; }
+}
+
+/* MOVIE SELECT */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border-dim);
+  padding: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+.panel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem; letter-spacing: 3px;
+  color: var(--gold); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.panel-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* MOVIE GRID SELECTOR */
+.movie-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.6rem;
+}
+.movie-option {
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  padding: 0.9rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.movie-option:hover { border-color: var(--gold-dim); background: var(--bg4); }
+.movie-option.selected {
+  border-color: var(--gold);
+  background: var(--gold-bg);
+}
+.movie-option .mo-emoji { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.movie-option .mo-title {
+  font-size: 0.72rem; font-weight: 500;
+  color: var(--text); line-height: 1.3;
+}
+.movie-option .mo-genre {
+  font-size: 0.6rem; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase; margin-top: 3px;
+}
+.movie-option.selected .mo-title { color: var(--gold); }
+
+/* SELECTED MOVIE PREVIEW */
+.selected-preview {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+  min-height: 70px;
+}
+.preview-emoji { font-size: 2rem; }
+.preview-info .movie-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem; letter-spacing: 2px;
+}
+.preview-info .movie-meta-tag {
+  font-size: 0.68rem; letter-spacing: 2px;
+  color: var(--gold); text-transform: uppercase; margin-top: 2px;
+}
+.preview-placeholder {
+  font-size: 0.8rem; color: var(--muted); letter-spacing: 1px;
+}
+
+/* STAR RATING */
+.stars-section { margin-bottom: 1.5rem; }
+.stars-label {
+  font-size: 0.72rem; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 1rem;
+}
+.stars-wrap { display: flex; gap: 6px; margin-bottom: 0.6rem; }
+.star {
+  font-size: 2.2rem; cursor: pointer;
+  color: var(--bg4);
+  transition: color 0.15s, transform 0.15s;
+  user-select: none; line-height: 1;
+}
+.star:hover { transform: scale(1.15); }
+.star.lit { color: var(--gold); }
+.star.hover-lit { color: #e0c060; }
+.stars-text {
+  font-size: 0.78rem; color: var(--muted);
+  min-height: 1.2em;
+  letter-spacing: 1px;
+}
+
+/* CRITERIA */
+.criteria-grid {
+  display: grid; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.criterion { }
+.crit-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.4rem;
+}
+.crit-label { font-size: 0.78rem; color: var(--text); letter-spacing: 1px; }
+.crit-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem; color: var(--gold); letter-spacing: 2px;
+}
+.crit-bar-bg {
+  height: 4px; background: var(--bg4);
+  position: relative; cursor: pointer;
+}
+.crit-bar-fill {
+  height: 100%; background: var(--gold);
+  transition: width 0.2s;
+  pointer-events: none;
+}
+.crit-bar-bg input[type=range] {
+  position: absolute; inset: -8px 0;
+  width: 100%; height: 20px;
+  opacity: 0; cursor: pointer; margin: 0;
+}
+
+/* COMMENT */
+.comment-wrap { margin-bottom: 1.5rem; }
+.comment-label {
+  font-size: 0.72rem; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 0.7rem;
+}
+textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  color: var(--text);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.9rem 1rem;
+  resize: vertical; min-height: 90px;
+  outline: none;
+  transition: border-color 0.2s;
+  letter-spacing: 0.5px;
+}
+textarea:focus { border-color: var(--gold-dim); }
+textarea::placeholder { color: var(--muted); }
+
+/* NAME */
+.name-wrap { margin-bottom: 1.8rem; }
+input[type=text] {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  color: var(--text);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type=text]:focus { border-color: var(--gold-dim); }
+input[type=text]::placeholder { color: var(--muted); }
+
+/* SUBMIT */
+.submit-btn {
+  width: 100%;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: none; cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem; letter-spacing: 4px;
+  padding: 1rem;
+  transition: background 0.2s, transform 0.15s;
+}
+.submit-btn:hover:not(:disabled) { background: #ddb84f; transform: translateY(-1px); }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--bg3); border: 1px solid var(--gold);
+  color: var(--text); padding: 1rem 2rem;
+  font-size: 0.85rem; letter-spacing: 1px;
+  transition: transform 0.35s ease;
+  z-index: 999; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: var(--red); }
+
+/* SIDEBAR */
+.sidebar {}
+
+/* LEADERBOARD */
+.lb-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.lb-item {
+  display: flex; align-items: center; gap: 0.8rem;
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  padding: 0.8rem 1rem;
+  transition: border-color 0.2s;
+}
+.lb-item:hover { border-color: var(--gold-dim); }
+.lb-rank {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem; color: var(--gold-dim);
+  min-width: 1.5rem; text-align: center;
+}
+.lb-rank.top { color: var(--gold); }
+.lb-emoji { font-size: 1.2rem; }
+.lb-info { flex: 1; min-width: 0; }
+.lb-name {
+  font-size: 0.82rem; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lb-genre { font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+.lb-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem; color: var(--gold); letter-spacing: 1px;
+  display: flex; align-items: baseline; gap: 2px;
+}
+.lb-score-max { font-size: 0.7rem; color: var(--muted); }
+.lb-votes { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; margin-top: 1px; }
+
+/* STATS CARD */
+.stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0.5rem; margin-bottom: 0.5rem;
+}
+.stat-box {
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  padding: 0.9rem; text-align: center;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem; color: var(--gold); letter-spacing: 2px; line-height: 1;
+}
+.stat-lbl { font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 3px; }
+
+/* RECENT REVIEWS */
+.review-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.review-item {
+  background: var(--bg3);
+  border: 1px solid var(--border-dim);
+  padding: 0.9rem 1rem;
+}
+.review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.review-movie { font-size: 0.72rem; font-weight: 500; color: var(--gold); letter-spacing: 1px; }
+.review-stars { font-size: 0.7rem; color: var(--gold); }
+.review-comment { font-size: 0.78rem; color: #bbb; line-height: 1.6; }
+.review-author { font-size: 0.65rem; color: var(--muted); margin-top: 0.4rem; letter-spacing: 1px; }
+
+/* SKELETON */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  height: 60px; margin-bottom: 0.5rem;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+.section-divider { height: 1px; background: var(--border-dim); margin: 0.5rem 0 1rem; }
+.empty-state { font-size: 0.8rem; color: var(--muted); text-align: center; padding: 2rem; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="tc-movie-website.html">TC<span>MOVIE</span></a>
+  <span class="nav-right">ระบบให้คะแนน</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero-banner">
+  <div class="hero-label">วิทยาลัยเทคนิคอุดรธานี · แผนกเทคโนโลยีคอมพิวเตอร์</div>
+  <h1 class="hero-title">RATE <span>&amp;</span> REVIEW</h1>
+  <p class="hero-sub">ให้คะแนนภาพยนตร์สั้นที่คุณชม</p>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="form-col">
+
+    <!-- STEP 1: PICK MOVIE -->
+    <div class="panel">
+      <div class="panel-title">01 — เลือกภาพยนตร์</div>
+      <div class="movie-selector" id="movieSelector"></div>
+    </div>
+
+    <!-- SELECTED PREVIEW -->
+    <div class="selected-preview" id="selectedPreview">
+      <span class="preview-placeholder">← กรุณาเลือกภาพยนตร์ก่อน</span>
+    </div>
+
+    <!-- STEP 2: OVERALL STAR -->
+    <div class="panel">
+      <div class="panel-title">02 — คะแนนรวม</div>
+      <div class="stars-section">
+        <div class="stars-label">กดดาวเพื่อให้คะแนน (1–5)</div>
+        <div class="stars-wrap" id="starsWrap">
+          <span class="star" data-v="1">★</span>
+          <span class="star" data-v="2">★</span>
+          <span class="star" data-v="3">★</span>
+          <span class="star" data-v="4">★</span>
+          <span class="star" data-v="5">★</span>
+        </div>
+        <div class="stars-text" id="starsText">ยังไม่ได้ให้คะแนน</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: CRITERIA -->
+    <div class="panel">
+      <div class="panel-title">03 — คะแนนรายด้าน</div>
+      <div class="criteria-grid" id="criteriaGrid">
+        <!-- generated by JS -->
+      </div>
+    </div>
+
+    <!-- STEP 4: COMMENT + NAME -->
+    <div class="panel">
+      <div class="panel-title">04 — ความคิดเห็น</div>
+      <div class="comment-wrap">
+        <div class="comment-label">รีวิวสั้น ๆ (ไม่บังคับ)</div>
+        <textarea id="commentInput" placeholder="เขียนความรู้สึกหลังชม…" maxlength="300"></textarea>
+      </div>
+      <div class="name-wrap">
+        <div class="comment-label">ชื่อผู้ให้คะแนน (ไม่บังคับ)</div>
+        <input type="text" id="nameInput" placeholder="ไม่ระบุ = 익명 / Anonymous" maxlength="50">
+      </div>
+      <button class="submit-btn" id="submitBtn" disabled onclick="submitRating()">
+        ส่งคะแนน
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- STATS -->
+    <div class="panel">
+      <div class="panel-title">สถิติรวม</div>
+      <div class="stat-grid" id="statGrid">
+        <div class="stat-box"><div class="stat-num" id="statTotal">—</div><div class="stat-lbl">รีวิวทั้งหมด</div></div>
+        <div class="stat-box"><div class="stat-num" id="statAvg">—</div><div class="stat-lbl">คะแนนเฉลี่ย</div></div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="panel">
+      <div class="panel-title">อันดับหนัง</div>
+      <div class="lb-list" id="lbList">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+      </div>
+    </div>
+
+    <!-- RECENT REVIEWS -->
+    <div class="panel">
+      <div class="panel-title">รีวิวล่าสุด</div>
+      <div class="review-list" id="reviewList">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG — เปลี่ยน URL ตรงนี้หลัง Deploy Apps Script
+// ============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrzjrZQN2SMz3bg8V5kpFo9qCq189dFOd9BaiMUYnx3DRiOxEyeJ6BvdmpV4mk5J6khQ/exec';
+
+// ============================================================
+// DATA
+// ============================================================
+
+const movies = [
+  { id:'bak-khi-kha',     title:'บักขี้ข้า',             genre:'DRAMA',   year:2567, level:'ปวช.', emoji:'🎭' },
+  { id:'rak-mak-ngai',    title:'รักมักง่าย',             genre:'ROMANCE', year:2567, level:'ปวส.', emoji:'💛' },
+  { id:'khao-pradap',     title:'ข้าวประดับดิน',           genre:'DRAMA',   year:2567, level:'ปวช.', emoji:'🌾' },
+  { id:'cast-away',       title:'Cast Away',              genre:'ACTION',  year:2567, level:'ปวช.', emoji:'⚡' },
+  { id:'the-6-sent',      title:'The 6 Sent',             genre:'ACTION',  year:2567, level:'ปวช.', emoji:'⚡' },
+  { id:'last-memory',     title:'Last Memory',            genre:'DRAMA',   year:2567, level:'ปวช.', emoji:'🎭' },
+  { id:'siaw',            title:'เสี่ยว',                  genre:'DRAMA',   year:2567, level:'ปวช.', emoji:'🎭' },
+  { id:'the-eyes',        title:'THE EYES',               genre:'HORROR',  year:2567, level:'ปวช.', emoji:'👁' },
+  { id:'khao-tham',       title:'เค้า"ทำแล้วได้อะไร"',     genre:'COMEDY',  year:2567, level:'ปวช.', emoji:'😂' },
+  { id:'pou-movie',       title:'POU MOVIE',              genre:'COMEDY',  year:2568, level:'ปวช.', emoji:'😂' },
+  { id:'hak-bo-pho',      title:'ฮัก(บ่)พอ',              genre:'ROMANCE', year:2568, level:'ปวส.', emoji:'💛' },
+  { id:'plai-thang',      title:'ปลายทางรัก…',            genre:'ROMANCE', year:2568, level:'ปวช.', emoji:'💛' },
+  { id:'hod-namta',       title:'หยดน้ำตากลางท่ง',        genre:'DRAMA',   year:2568, level:'ปวส.', emoji:'🎭' },
+  { id:'friend-love',     title:'FRIEND...I LOVE YOU',    genre:'COMEDY',  year:2568, level:'ปวช.', emoji:'😂' },
+  { id:'static',          title:'STATIC สถิต',            genre:'HORROR',  year:2568, level:'ปวช.', emoji:'👁' },
+  { id:'bulete',          title:'BULETE THE FIRST',       genre:'ACTION',  year:2568, level:'ปวช.', emoji:'⚡' },
+];
+
+const criteria = [
+  { id:'story',    label:'เนื้อเรื่อง (Story)',      desc:'ความน่าสนใจและความสมเหตุสมผล' },
+  { id:'acting',   label:'การแสดง (Acting)',         desc:'ความเป็นธรรมชาติของนักแสดง' },
+  { id:'camera',   label:'ภาพและมุมกล้อง (Camera)',  desc:'เทคนิคถ่ายทำและมุมกล้อง' },
+  { id:'sound',    label:'เสียงและดนตรี (Sound)',    desc:'คุณภาพเสียงและการใช้เพลงประกอบ' },
+  { id:'edit',     label:'ตัดต่อ (Editing)',          desc:'ความลื่นไหลและจังหวะการตัดต่อ' },
+];
+
+const starLabels = ['','แย่มาก','พอใช้ได้','ดี','ดีมาก','ยอดเยี่ยม!'];
+
+// ============================================================
+// STATE
+// ============================================================
+let selectedMovie = null;
+let overallScore  = 0;
+let critScores    = { story:5, acting:5, camera:5, sound:5, edit:5 };
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderMovieSelector();
+  renderCriteria();
+  loadSidebarData();
+});
+
+// ============================================================
+// MOVIE SELECTOR
+// ============================================================
+function renderMovieSelector() {
+  const el = document.getElementById('movieSelector');
+  el.innerHTML = movies.map(m => `
+    <div class="movie-option" data-id="${m.id}" onclick="selectMovie('${m.id}')">
+      <div class="mo-emoji">${m.emoji}</div>
+      <div class="mo-title">${m.title}</div>
+      <div class="mo-genre">${m.genre} · ${m.year}</div>
+    </div>
+  `).join('');
+}
+
+function selectMovie(id) {
+  selectedMovie = movies.find(m => m.id === id);
+  document.querySelectorAll('.movie-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.id === id);
+  });
+  const prev = document.getElementById('selectedPreview');
+  prev.innerHTML = `
+    <span class="preview-emoji">${selectedMovie.emoji}</span>
+    <div class="preview-info">
+      <div class="movie-name">${selectedMovie.title}</div>
+      <div class="movie-meta-tag">${selectedMovie.genre} · ${selectedMovie.level} · ปีการศึกษา ${selectedMovie.year}</div>
+    </div>
+  `;
+  checkReady();
+}
+
+// ============================================================
+// STAR RATING
+// ============================================================
+const starsWrap = document.getElementById('starsWrap');
+const stars = starsWrap.querySelectorAll('.star');
+
+starsWrap.addEventListener('mouseover', e => {
+  const s = e.target.closest('.star');
+  if (!s) return;
+  const v = +s.dataset.v;
+  stars.forEach(st => {
+    st.classList.remove('lit','hover-lit');
+    if (+st.dataset.v <= overallScore) st.classList.add('lit');
+    if (+st.dataset.v <= v) st.classList.add('hover-lit');
+  });
+  document.getElementById('starsText').textContent = starLabels[v];
+});
+starsWrap.addEventListener('mouseleave', () => {
+  stars.forEach(st => {
+    st.classList.remove('hover-lit');
+    st.classList.toggle('lit', +st.dataset.v <= overallScore);
+  });
+  document.getElementById('starsText').textContent = overallScore ? starLabels[overallScore] : 'ยังไม่ได้ให้คะแนน';
+});
+starsWrap.addEventListener('click', e => {
+  const s = e.target.closest('.star');
+  if (!s) return;
+  overallScore = +s.dataset.v;
+  stars.forEach(st => st.classList.toggle('lit', +st.dataset.v <= overallScore));
+  document.getElementById('starsText').textContent = starLabels[overallScore];
+  checkReady();
+});
+
+// ============================================================
+// CRITERIA SLIDERS
+// ============================================================
+function renderCriteria() {
+  const grid = document.getElementById('criteriaGrid');
+  grid.innerHTML = criteria.map(c => `
+    <div class="criterion">
+      <div class="crit-header">
+        <span class="crit-label">${c.label}</span>
+        <span class="crit-score" id="cs-${c.id}">5 / 10</span>
+      </div>
+      <div class="crit-bar-bg">
+        <div class="crit-bar-fill" id="cf-${c.id}" style="width:50%"></div>
+        <input type="range" min="1" max="10" value="5" step="1"
+          oninput="updateCrit('${c.id}', this.value)"
+          aria-label="${c.label}">
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateCrit(id, val) {
+  critScores[id] = +val;
+  document.getElementById('cs-' + id).textContent = val + ' / 10';
+  document.getElementById('cf-' + id).style.width = (val / 10 * 100) + '%';
+}
+
+// ============================================================
+// SUBMIT CHECK
+// ============================================================
+function checkReady() {
+  document.getElementById('submitBtn').disabled = !(selectedMovie && overallScore > 0);
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+async function submitRating() {
+  if (!selectedMovie || !overallScore) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังส่ง…';
+
+  const payload = {
+    movie_id:    selectedMovie.id,
+    movie_title: selectedMovie.title,
+    movie_genre: selectedMovie.genre,
+    movie_year:  selectedMovie.year,
+    overall:     overallScore,
+    story:       critScores.story,
+    acting:      critScores.acting,
+    camera:      critScores.camera,
+    sound:       critScores.sound,
+    edit:        critScores.edit,
+    comment:     document.getElementById('commentInput').value.trim(),
+    reviewer:    document.getElementById('nameInput').value.trim() || 'Anonymous',
+    timestamp:   new Date().toISOString(),
+  };
+
+  try {
+    // ถ้ายังไม่ได้ตั้ง URL จะ simulate
+    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      await fakeDelay(1200);
+      showToast('✓ ส่งคะแนนสำเร็จ! (Demo Mode)', false);
+      simulateNewReview(payload);
+    } else {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✓ ขอบคุณสำหรับคะแนน!', false);
+      setTimeout(() => loadSidebarData(), 1500);
+    }
+    resetForm();
+  } catch(err) {
+    showToast('✗ เกิดข้อผิดพลาด กรุณาลองใหม่', true);
+    btn.disabled = false;
+    btn.textContent = 'ส่งคะแนน';
+  }
+}
+
+function resetForm() {
+  selectedMovie = null; overallScore = 0;
+  document.querySelectorAll('.movie-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('selectedPreview').innerHTML = '<span class="preview-placeholder">← กรุณาเลือกภาพยนตร์ก่อน</span>';
+  stars.forEach(st => st.classList.remove('lit','hover-lit'));
+  document.getElementById('starsText').textContent = 'ยังไม่ได้ให้คะแนน';
+  document.getElementById('commentInput').value = '';
+  document.getElementById('nameInput').value = '';
+  document.getElementById('submitBtn').textContent = 'ส่งคะแนน';
+  criteria.forEach(c => { critScores[c.id]=5; updateCrit(c.id,5); document.querySelector(`[oninput*="${c.id}"]`).value=5; });
+  checkReady();
+}
+
+// ============================================================
+// SIDEBAR DATA
+// ============================================================
+async function loadSidebarData() {
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    renderDemoSidebar();
+    return;
+  }
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=get');
+    const data = await res.json();
+    renderStats(data.stats);
+    renderLeaderboard(data.leaderboard);
+    renderRecentReviews(data.recent);
+  } catch {
+    renderDemoSidebar();
+  }
+}
+
+function renderStats(stats) {
+  document.getElementById('statTotal').textContent = stats.total;
+  document.getElementById('statAvg').textContent   = stats.avg.toFixed(1);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('lbList');
+  if (!lb || !lb.length) { el.innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>'; return; }
+  el.innerHTML = lb.slice(0,8).map((m, i) => `
+    <div class="lb-item">
+      <span class="lb-rank ${i<3?'top':''}">${i+1}</span>
+      <span class="lb-emoji">${getEmoji(m.id)}</span>
+      <div class="lb-info">
+        <div class="lb-name">${m.title}</div>
+        <div class="lb-genre">${m.genre} · <span class="lb-votes">${m.votes} votes</span></div>
+      </div>
+      <div>
+        <div class="lb-score">${m.avg.toFixed(1)}<span class="lb-score-max">/5</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRecentReviews(reviews) {
+  const el = document.getElementById('reviewList');
+  if (!reviews || !reviews.length) { el.innerHTML = '<div class="empty-state">ยังไม่มีรีวิว</div>'; return; }
+  el.innerHTML = reviews.slice(0,5).map(r => `
+    <div class="review-item">
+      <div class="review-top">
+        <span class="review-movie">${r.title}</span>
+        <span class="review-stars">${'★'.repeat(r.overall)}${'☆'.repeat(5-r.overall)}</span>
+      </div>
+      ${r.comment ? `<div class="review-comment">"${r.comment}"</div>` : ''}
+      <div class="review-author">— ${r.reviewer}</div>
+    </div>
+  `).join('');
+}
+
+function getEmoji(id) {
+  return movies.find(m => m.id === id)?.emoji || '🎬';
+}
+
+// ============================================================
+// DEMO / SIMULATE
+// ============================================================
+const demoLeaderboard = [
+  { id:'the-eyes',    title:'THE EYES',            genre:'HORROR',  avg:4.8, votes:12 },
+  { id:'static',      title:'STATIC สถิต',         genre:'HORROR',  avg:4.6, votes:9  },
+  { id:'cast-away',   title:'Cast Away',           genre:'ACTION',  avg:4.5, votes:14 },
+  { id:'bak-khi-kha', title:'บักขี้ข้า',            genre:'DRAMA',   avg:4.3, votes:8  },
+  { id:'bulete',      title:'BULETE THE FIRST',    genre:'ACTION',  avg:4.2, votes:7  },
+  { id:'hak-bo-pho',  title:'ฮัก(บ่)พอ',           genre:'ROMANCE', avg:4.1, votes:6  },
+];
+const demoReviews = [
+  { title:'THE EYES',   overall:5, comment:'น่ากลัวมากกกก บรรยากาศดีมาก', reviewer:'มินท์' },
+  { title:'Cast Away',  overall:4, comment:'แอ็กชั่นสนุก ตัดต่อดีมาก',   reviewer:'ปาล์ม' },
+  { title:'บักขี้ข้า',  overall:5, comment:'เนื้อเรื่องกินใจ ชอบมาก',      reviewer:'Anonymous' },
+];
+
+function renderDemoSidebar() {
+  renderStats({ total: 56, avg: 4.3 });
+  renderLeaderboard(demoLeaderboard);
+  renderRecentReviews(demoReviews);
+}
+
+function simulateNewReview(payload) {
+  const el = document.getElementById('reviewList');
+  const newItem = document.createElement('div');
+  newItem.className = 'review-item';
+  newItem.style.borderColor = 'var(--gold-dim)';
+  newItem.innerHTML = `
+    <div class="review-top">
+      <span class="review-movie">${payload.movie_title}</span>
+      <span class="review-stars">${'★'.repeat(payload.overall)}${'☆'.repeat(5-payload.overall)}</span>
+    </div>
+    ${payload.comment ? `<div class="review-comment">"${payload.comment}"</div>` : ''}
+    <div class="review-author">— ${payload.reviewer} · เมื่อกี้</div>
+  `;
+  el.prepend(newItem);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  setTimeout(() => t.classList.add('show'), 50);
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function fakeDelay(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
