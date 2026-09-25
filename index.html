@@ -556,8 +556,8 @@
 <!-- HERO -->
 <section class="hero">
   <!-- วิดีโอพื้นหลัง (แนะนำให้วางไฟล์ .mp4 ไว้โฟลเดอร์เดียวกับไฟล์ html หรือใช้ Direct Link) -->
-  <video class="bg-video" autoplay muted loop playsinline>
-    <source src="Sunflower.mp4" type="video/mp4">
+  <video class="bg-video" autoplay muted loop playsinline preload="none" aria-hidden="true">
+    <source data-src="Post Malone, Swae Lee - Sunflower (Spider-Man_ Into the Spider-Verse).mp4" type="video/mp4">
   </video>
   
   <div class="hero-content">
@@ -723,6 +723,25 @@
   window.addEventListener('load', ()=>{
     setTimeout(hideLoader, 700);
   });
+})();
+
+// Load the large background video after the first render.
+(function(){
+  const video = document.querySelector('.bg-video');
+  const source = video && video.querySelector('source[data-src]');
+  if(!video || !source) return;
+
+  function loadBackgroundVideo(){
+    source.src = source.dataset.src;
+    video.load();
+    video.play().catch(()=>{});
+  }
+
+  if('requestIdleCallback' in window) {
+    requestIdleCallback(loadBackgroundVideo, { timeout: 2500 });
+  } else {
+    window.setTimeout(loadBackgroundVideo, 1500);
+  }
 })();
 
 // Scroll Reveal
