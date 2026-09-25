@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TC MOVIE — วิทยาลัยเทคนิคอุดรธานี</title>
+<meta name="google-site-verification" content="MwE7F3hyDAAo9zhp0EKxo8Rsz9qK_lj_7-6gp8hP0ro" />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -65,9 +66,22 @@
     text-align: center;
     overflow: hidden;
   }
+  .bg-video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0.35;
+    filter: brightness(0.5) saturate(1.2);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
   .hero::before {
     content: '';
-    position: absolute; inset: 0;
+    position: absolute; inset: 0; z-index: 1;
     background:
       repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
       repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.03) 80px, rgba(255,255,255,0.03) 81px);
@@ -147,7 +161,7 @@
 
   /* FILM STRIP */
   .filmstrip {
-    position: absolute; bottom: 0; left: 0; right: 0;
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
     height: 40px;
     display: flex; gap: 0;
     overflow: hidden;
@@ -175,6 +189,55 @@
     letter-spacing: 4px;
     line-height: 1;
   }
+  #genres .section-title.valorant-text {
+    display: inline-block;
+    position: relative;
+    color: transparent;
+    background: linear-gradient(90deg, rgba(201,168,76,1) 0%, rgba(240,236,224,0.95) 40%, rgba(201,168,76,0.4) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: valorantShimmer 3s ease-in-out infinite;
+  }
+  #genres .section-title.valorant-text::before,
+  #genres .section-title.valorant-text::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: var(--gold);
+    opacity: 0.32;
+    z-index: -1;
+    pointer-events: none;
+  }
+  #genres .section-title.valorant-text::before {
+    transform: translate(-2px, -2px);
+    filter: blur(0.5px);
+    animation: valorantGlitchA 2.7s infinite linear;
+  }
+  #genres .section-title.valorant-text::after {
+    transform: translate(2px, 2px);
+    filter: blur(0.5px);
+    animation: valorantGlitchB 3.1s infinite linear reverse;
+  }
+  @keyframes valorantShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes valorantGlitchA {
+    0%, 20%, 40%, 60%, 80%, 100% { transform: translate(-2px, -2px); }
+    10% { transform: translate(-5px, -1px); }
+    30% { transform: translate(1px, -3px); }
+    50% { transform: translate(-3px, 0px); }
+    70% { transform: translate(2px, -2px); }
+    90% { transform: translate(-1px, -4px); }
+  }
+  @keyframes valorantGlitchB {
+    0%, 20%, 40%, 60%, 80%, 100% { transform: translate(2px, 2px); }
+    10% { transform: translate(5px, 1px); }
+    30% { transform: translate(-1px, 3px); }
+    50% { transform: translate(3px, 0px); }
+    70% { transform: translate(-2px, 2px); }
+    90% { transform: translate(1px, 4px); }
+  }
   .divider {
     width: 60px; height: 2px;
     background: var(--gold);
@@ -182,7 +245,29 @@
   }
 
   /* GENRES */
-  #genres { background: var(--bg2); }
+  #genres {
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+  #genres > * { position: relative; z-index: 3; }
+  .genres-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(135deg, rgba(10,10,10,0.78) 0%, rgba(10,10,10,0.55) 100%);
+  }
+  .genres-scanlines {
+    position: absolute; inset: 0; z-index: 2;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+  }
+  .genres-vignette {
+    position: absolute; inset: 0; z-index: 2;
+    box-shadow: inset 0 0 120px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
   .genres-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -191,123 +276,151 @@
     border: 1px solid var(--border);
   }
   .genre-card {
-    background: var(--bg3);
+    background: rgba(26,26,26,0.55) !important;
+    backdrop-filter: blur(6px);
     padding: 2.5rem 1.5rem;
     text-align: center;
     cursor: pointer;
-    transition: background 0.25s;
-    border: 1px solid transparent;
+    transition: border-color 0.25s, background 0.25s;
+    border: 1px solid rgba(201,168,76,0.15) !important;
     text-decoration: none;
     display: block;
+    position: relative;
+    overflow: hidden;
   }
   .genre-card:hover {
-    background: #222;
-    border-color: var(--gold);
+    background: rgba(40,40,40,0.8) !important;
+    border-color: var(--gold) !important;
   }
+  .genre-card::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.45) 0%, rgba(10,10,10,0.72) 100%);
+    transition: background 0.25s;
+  }
+  .genre-card:hover::after {
+    background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 100%);
+  }
+  .fade-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    z-index: 0;
+  }
+  .fade-img.active { opacity: 1; }
   .genre-icon {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     display: block;
+    position: relative; z-index: 2;
   }
   .genre-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem;
     letter-spacing: 3px;
     color: var(--text);
+    position: relative; z-index: 2;
   }
   .genre-count {
     font-size: 0.75rem;
-    color: var(--muted);
+    color: rgba(240,236,224,0.75);
     margin-top: 0.4rem;
     letter-spacing: 1px;
+    position: relative; z-index: 2;
   }
 
   /* MOVIES */
   #movies { background: var(--bg); }
+  .movies-controls {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    align-items: flex-end;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  .search-wrap {
+    margin-top: 0;
+    position: relative;
+    max-width: 480px;
+    flex: 1;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 44px 12px 16px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap .search-icon {
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted); font-size: 1rem; pointer-events: none;
+  }
+  .search-clear {
+    position: absolute; right: 38px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 1rem; display: none; padding: 2px 4px;
+  }
+  .search-clear:hover { color: var(--gold); }
   .movies-filter {
     display: flex; gap: 0.5rem; flex-wrap: wrap;
-    margin-top: 2rem;
-    margin-bottom: 3rem;
   }
   .filter-btn {
     background: transparent;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255,255,255,0.12);
     color: var(--muted);
-    padding: 7px 20px;
+    padding: 6px 18px;
     font-family: 'Sarabun', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
+    border-radius: 2px;
   }
-  .filter-btn:hover, .filter-btn.active {
+  .filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+  .filter-btn.active {
     background: var(--gold);
     border-color: var(--gold);
     color: #0a0a0a;
   }
   .movies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
   }
   .movie-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    transition: transform 0.25s, border-color 0.25s;
-    cursor: pointer;
-  }
-  .movie-card:hover { transform: translateY(-4px); border-color: var(--gold); }
-  .movie-thumb {
-    width: 100%;
-    height: 180px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3rem;
     position: relative;
+    border-radius: 4px;
     overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 2/3;
+    background: var(--bg3);
+    transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s;
+    border: none;
   }
-  .movie-thumb::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.7));
+  .movie-card:hover {
+    transform: scale(1.04) translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,168,76,0.3);
+    z-index: 2;
   }
-  .movie-info { padding: 1rem 1.2rem 1.2rem; }
-  .movie-genre-tag {
-    font-size: 0.65rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
+  .movie-cover {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
   }
-  .movie-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.3rem;
-    letter-spacing: 2px;
-    line-height: 1.1;
-    margin-bottom: 0.3rem;
-  }
-  .movie-title-th {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 0.8rem;
-  }
-  .movie-meta {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    padding-top: 0.8rem;
-    margin-top: 0.8rem;
-  }
-  .movie-year {
-    background: var(--red);
-    color: #fff;
-    padding: 2px 8px;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-  }
-  .star-rating { color: var(--gold); font-size: 0.8rem; }
+  .movie-card:hover .movie-cover { transform: scale(1.05); }
 
   /* ABOUT */
   #about {
@@ -336,7 +449,7 @@
     display: flex; align-items: flex-start; gap: 1rem;
     padding: 1rem 0;
     border-bottom: 1px solid var(--border);
-  }
+  } 
   .team-num {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.8rem;
@@ -348,7 +461,20 @@
   .team-role { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 
   /* RATE */
-  #rate { background: var(--bg); text-align: center; }
+  #rate {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    text-align: center;
+  }
+  #rate > * { position: relative; z-index: 3; }
+  .rate-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(10,10,10,0.65) 0%, rgba(10,10,10,0.8) 35%, rgba(10,10,10,0.95) 100%);
+    pointer-events: none;
+  }
   .rate-inner { max-width: 560px; margin: 0 auto; }
   .rate-inner p { color: var(--muted); margin: 1rem 0 2.5rem; line-height: 1.8; }
 
@@ -368,7 +494,7 @@
   }
   footer p { font-size: 0.78rem; color: var(--muted); letter-spacing: 1px; }
 
-  /* ANIMATIONS */
+  /* ANIMATIONS & UTILS */
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -385,9 +511,36 @@
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+  /* SITE LOADER */
+  #site-loader { position: fixed; inset: 0; z-index: 9999; display:flex; align-items:center; justify-content:center; background: linear-gradient(180deg, rgba(4,4,6,0.95), rgba(4,4,6,0.85)); transition: opacity 0.8s ease, visibility 0.8s; }
+  #site-loader[aria-hidden="true"] { opacity:0; visibility:hidden; pointer-events:none; }
+  #site-loader .loader-bg { position:absolute; inset:0; background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, rgba(0,0,0,0.5) 60%); filter: blur(8px) contrast(1.05); }
+  .loader-inner { position:relative; z-index:2; text-align:center; color:var(--text); padding:24px; }
+  .loader-ring { width:100px; height:100px; border-radius:50%; margin:0 auto 14px; box-shadow: 0 0 30px rgba(201,168,76,0.12) inset; position:relative; }
+  .loader-ring::before { content:''; position:absolute; inset:6px; border-radius:50%; background: linear-gradient(90deg, rgba(201,168,76,0.06), rgba(240,236,224,0.02)); }
+  .loader-ring::after { content:''; position:absolute; left:50%; top:50%; width:14px; height:14px; transform:translate(-50%,-50%); border-radius:50%; background:var(--gold); box-shadow:0 0 18px var(--gold); animation: loaderPulse 1.6s infinite ease-in-out; }
+  .loader-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; letter-spacing:6px; margin-bottom:6px; color:var(--text); }
+  .loader-logo span { color:var(--gold); }
+  .loader-sub { color:var(--muted); font-size:0.9rem; margin-bottom:10px; }
+  .loader-dots span { display:inline-block; width:8px; height:8px; background:var(--gold); border-radius:50%; margin:0 6px; opacity:0.2; animation: loaderDots 1s infinite steps(3,end); }
+  .loader-dots span:nth-child(2){ animation-delay:0.15s } .loader-dots span:nth-child(3){ animation-delay:0.3s }
+  @keyframes loaderPulse { 0%{ transform:translate(-50%,-50%) scale(1); opacity:0.9 } 50%{ transform:translate(-50%,-50%) scale(1.5); opacity:1 } 100%{ transform:translate(-50%,-50%) scale(1); opacity:0.9 } }
+  @keyframes loaderDots { 0%{ opacity:0.2; transform:translateY(0) } 50%{ opacity:1; transform:translateY(-8px) } 100%{ opacity:0.2; transform:translateY(0) } }
 </style>
 </head>
 <body>
+
+<!-- SITE LOADER -->
+<div id="site-loader" aria-hidden="false">
+  <div class="loader-bg"></div>
+  <div class="loader-inner">
+    <div class="loader-ring" aria-hidden="true"></div>
+    <div class="loader-logo">TC<span>MOVIE</span></div>
+    <div class="loader-sub">Short Films Loading</div>
+    <div class="loader-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -402,20 +555,23 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">วิทยาลัยเทคนิคอุดรธานี · แผนกเทคโนโลยีคอมพิวเตอร์</div>
-  <h1 class="hero-title">TC<br><span class="accent">MOVIE</span></h1>
-  <p class="hero-sub">Short Films by Vocational Students</p>
-  <p class="hero-desc">รวบรวมผลงานภาพยนตร์สั้นของนักเรียน ปวช. และ ปวส. ที่สร้างสรรค์ขึ้นด้วยหัวใจและทักษะจริง</p>
-  <div class="hero-cta">
-    <a href="#movies" class="btn-primary">ชมผลงาน</a>
-    <a href="#rate" class="btn-outline">ให้คะแนนหนัง</a>
+  <!-- วิดีโอพื้นหลัง (แนะนำให้วางไฟล์ .mp4 ไว้โฟลเดอร์เดียวกับไฟล์ html หรือใช้ Direct Link) -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="Sunflower.mp4" type="video/mp4">
+  </video>
+  
+  <div class="hero-content">
+    <div class="hero-badge">วิทยาลัยเทคนิคอุดรธานี · แผนกเทคโนโลยีคอมพิวเตอร์</div>
+    <h1 class="hero-title">TC<br><span class="accent">MOVIE</span></h1>
+    <p class="hero-sub">Short Films by Vocational Students</p>
+    <p class="hero-desc">รวบรวมผลงานภาพยนตร์สั้นของนักเรียน ปวช. และ ปวส. ที่สร้างสรรค์ขึ้นด้วยหัวใจและทักษะจริง</p>
+    <div class="hero-cta">
+      <a href="#movies" class="btn-primary">ชมผลงาน</a>
+      <a href="#rate" class="btn-outline">ให้คะแนนหนัง</a>
+    </div>
   </div>
+
   <div class="filmstrip" aria-hidden="true">
-    <!-- Film holes decoration -->
-    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
-    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
-    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
-    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
     <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
     <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
     <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
@@ -425,39 +581,47 @@
 
 <!-- GENRES -->
 <section id="genres">
+  <div class="genres-overlay"></div>
+  <div class="genres-scanlines"></div>
+  <div class="genres-vignette"></div>
   <div class="section-label">หมวดหมู่ภาพยนตร์</div>
-  <h2 class="section-title reveal">MOVIE GENRES</h2>
+  <h2 class="section-title reveal valorant-text" data-text="MOVIE GENRES">MOVIE GENRES</h2>
   <div class="divider"></div>
   <div class="genres-grid reveal">
-    <a class="genre-card" href="#" onclick="filterMovies('DRAMA'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('DRAMA', null); return false;">
+      <img class="fade-img active" src="DRAMA.png" alt="Drama">
       <span class="genre-icon">🎭</span>
       <div class="genre-name">Drama</div>
-      <div class="genre-count">ดราม่า</div>
+      <div class="genre-count">ดราม่าน้ำ(ตา)แตก</div>
     </a>
-    <a class="genre-card" href="#" onclick="filterMovies('COMEDY'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('COMEDY', null); return false;">
+      <img class="fade-img active" src="COMEDY.png" alt="Comedy">
       <span class="genre-icon">😂</span>
       <div class="genre-name">Comedy</div>
-      <div class="genre-count">ตลก</div>
+      <div class="genre-count">ตลกฮาขี้แตก</div>
     </a>
-    <a class="genre-card" href="#" onclick="filterMovies('ROMANCE'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('ROMANCE', null); return false;">
+      <img class="fade-img active" src="ROMANCE.png" alt="Romance">
       <span class="genre-icon">💛</span>
       <div class="genre-name">Romance</div>
-      <div class="genre-count">รักโรแมนติก</div>
+      <div class="genre-count">รัก(เกือบ)โรแมนติก</div>
     </a>
-    <a class="genre-card" href="#" onclick="filterMovies('ACTION'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('ACTION', null); return false;">
+      <img class="fade-img active" src="ACTION.png" alt="Action">
       <span class="genre-icon">⚡</span>
       <div class="genre-name">Action</div>
-      <div class="genre-count">แอ็กชัน</div>
+      <div class="genre-count">แอ็กชัน..หรอวะ</div>
     </a>
-    <a class="genre-card" href="#" onclick="filterMovies('HORROR'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('HORROR', null); return false;">
+      <img class="fade-img active" src="DARK.png" alt="Horror">
       <span class="genre-icon">👁</span>
       <div class="genre-name">Horror</div>
-      <div class="genre-count">สยองขวัญ</div>
+      <div class="genre-count">สยองขวัญขน..ลุก</div>
     </a>
-    <a class="genre-card" href="#" onclick="filterMovies('TEASER'); return false;">
+    <a class="genre-card" href="#" onclick="filterMovies('TEASER', null); return false;">
       <span class="genre-icon">🎬</span>
       <div class="genre-name">Teaser</div>
-      <div class="genre-count">ตัวอย่างหนัง</div>
+      <div class="genre-count">ตัวอย่างหนังไม่มีหรอก</div>
     </a>
   </div>
 </section>
@@ -467,15 +631,24 @@
   <div class="section-label">ผลงานทั้งหมด</div>
   <h2 class="section-title reveal">ALL FILMS</h2>
   <div class="divider"></div>
-  <div class="movies-filter reveal">
-    <button class="filter-btn active" onclick="filterMovies('ALL', this)">ทั้งหมด</button>
-    <button class="filter-btn" onclick="filterMovies('DRAMA', this)">DRAMA</button>
-    <button class="filter-btn" onclick="filterMovies('COMEDY', this)">COMEDY</button>
-    <button class="filter-btn" onclick="filterMovies('ROMANCE', this)">ROMANCE</button>
-    <button class="filter-btn" onclick="filterMovies('ACTION', this)">ACTION</button>
-    <button class="filter-btn" onclick="filterMovies('HORROR', this)">HORROR</button>
-    <button class="filter-btn" onclick="filterMovies('TEASER', this)">TEASER</button>
+
+  <div class="movies-controls reveal">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="ค้นหาภาพยนตร์... / Search films..." oninput="handleSearch(this.value)">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="movies-filter">
+      <button class="filter-btn active" onclick="filterMovies('ALL', this)">ทั้งหมด</button>
+      <button class="filter-btn" onclick="filterMovies('DRAMA', this)">DRAMA</button>
+      <button class="filter-btn" onclick="filterMovies('COMEDY', this)">COMEDY</button>
+      <button class="filter-btn" onclick="filterMovies('ROMANCE', this)">ROMANCE</button>
+      <button class="filter-btn" onclick="filterMovies('ACTION', this)">ACTION</button>
+      <button class="filter-btn" onclick="filterMovies('HORROR', this)">HORROR</button>
+      <button class="filter-btn" onclick="filterMovies('TEASER', this)">TEASER</button>
+    </div>
   </div>
+
   <div class="movies-grid" id="moviesGrid"></div>
 </section>
 
@@ -519,6 +692,7 @@
 
 <!-- RATE -->
 <section id="rate">
+  <div class="rate-overlay"></div>
   <div class="rate-inner">
     <div class="section-label">ร่วมเป็นส่วนหนึ่ง</div>
     <h2 class="section-title reveal">RATE &amp; REVIEW</h2>
@@ -537,60 +711,78 @@
 </footer>
 
 <script>
+// Loader hide logic
+(function(){
+  function hideLoader(){
+    const l = document.getElementById('site-loader');
+    if(!l) return;
+    l.setAttribute('aria-hidden','true');
+    setTimeout(()=>{ if(l && l.parentNode) l.parentNode.removeChild(l); }, 1200);
+  }
+  if(document.readyState === 'complete') return hideLoader();
+  window.addEventListener('load', ()=>{
+    setTimeout(hideLoader, 700);
+  });
+})();
+
+// Scroll Reveal
+window.addEventListener('scroll', revealOnScroll);
+function revealOnScroll() {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(el => {
+    const windowHeight = window.innerHeight;
+    const elementTop = el.getBoundingClientRect().top;
+    if (elementTop < windowHeight - 100) {
+      el.classList.add('visible');
+    }
+  });
+}
+revealOnScroll();
+
+// Movies Data
 const movies = [
-  { title: 'บักขี้ข้า', titleEn: '', genre: 'DRAMA', year: 2567, level: 'ปวช.', bg: '#1a0a0a', emoji: '🎭', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/บกขขา' },
-  { title: 'รักมักง่าย', titleEn: '', genre: 'ROMANCE', year: 2567, level: 'ปวส.', bg: '#0a0a1a', emoji: '💛', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/รกมกงาย' },
-  { title: 'ข้าวประดับดิน', titleEn: '', genre: 'DRAMA', year: 2567, level: 'ปวช.', bg: '#0a1a0a', emoji: '🌾', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/ขาวประดบดน' },
-  { title: 'Cast Away', titleEn: "go'n fine a way", genre: 'ACTION', year: 2567, level: 'ปวช.', bg: '#0a1015', emoji: '⚡', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/cast-away' },
-  { title: 'The 6 Sent', titleEn: 'เดอะ ซิกซ์ เซนท์', genre: 'ACTION', year: 2567, level: 'ปวช.', bg: '#0a0a1a', emoji: '⚡', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/the-6-sent' },
-  { title: 'Last Memory', titleEn: 'ลาสท์ เมโมรี', genre: 'DRAMA', year: 2567, level: 'ปวช.', bg: '#1a0f0a', emoji: '🎭', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/last-memory' },
-  { title: 'เสี่ยว', titleEn: '', genre: 'DRAMA', year: 2567, level: 'ปวช.', bg: '#100a1a', emoji: '🎭', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/เสยว' },
-  { title: 'THE EYES', titleEn: 'ดิ อายส์', genre: 'HORROR', year: 2567, level: 'ปวช.', bg: '#0f0a0a', emoji: '👁', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/the-eyes' },
-  { title: 'เค้า"ทำแล้วได้อะไร"', titleEn: '', genre: 'COMEDY', year: 2567, level: 'ปวช.', bg: '#0a150a', emoji: '😂', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/เคาทำแลวไดอะไร' },
-  { title: 'POU MOVIE', titleEn: 'หนังโป', genre: 'COMEDY', year: 2568, level: 'ปวช.', bg: '#150a0a', emoji: '😂', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/หนงโป' },
-  { title: 'ฮัก(บ่)พอ', titleEn: '', genre: 'ROMANCE', year: 2568, level: 'ปวส.', bg: '#0a0a18', emoji: '💛', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/ฮกบพอ' },
-  { title: 'ปลายทางรักหรือปลายทางนี้', titleEn: '', genre: 'ROMANCE', year: 2568, level: 'ปวช.', bg: '#0f0a14', emoji: '💛', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/ปลายทางรกหรอปลายทางหน' },
-  { title: 'หยดน้ำตากลางท่ง', titleEn: '', genre: 'DRAMA', year: 2568, level: 'ปวส.', bg: '#0a0f15', emoji: '🎭', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/หยดนาตากลางทง' },
-  { title: 'FRIEND...I LOVE YOU', titleEn: 'เพื่อนกูรักมึงหว่ะ', genre: 'COMEDY', year: 2568, level: 'ปวช.', bg: '#0a150f', emoji: '😂', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/friend-i-love-you' },
-  { title: 'STATIC สถิต', titleEn: '', genre: 'HORROR', year: 2568, level: 'ปวช.', bg: '#100a0a', emoji: '👁', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/สถต' },
-  { title: 'BULETE THE FIRST', titleEn: 'บู๊เละเทะ เดอะเฟิร์ส', genre: 'ACTION', year: 2568, level: 'ปวช.', bg: '#0a100a', emoji: '⚡', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/bulete-the-first' },
+  { id:'bak-khi-kha',   title: 'บักขี้ข้า',       genre: 'DRAMA',   year: 2567, cover: 'COMEDY1.png', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/บกขขา' },
+  { id:'rak-mak-ngai',  title: 'รักมักง่าย',      genre: 'ROMANCE', year: 2567, cover: 'DRAMA3.png',  url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/รกมกงาย' },
+  { id:'khao-pradap',  title: 'ข้าวประดับดิน',   genre: 'DRAMA',   year: 2567, cover: 'HORROR4.png', url: 'https://sites.google.com/udontech.ac.th/tcmoviewebsite/ขาวประดบดน' },
+  { id:'cast-away',    title: 'Cast Away',      genre: 'DRAMA',   year: 2567, cover: 'DRAMA5.png',  url: '#' }
 ];
 
-let currentFilter = 'ALL';
-
-function renderMovies(filter) {
+function renderMovies(items) {
   const grid = document.getElementById('moviesGrid');
-  const filtered = filter === 'ALL' ? movies : movies.filter(m => m.genre === filter);
-  grid.innerHTML = filtered.map(m => `
-    <div class="movie-card" onclick="window.open('${m.url}','_blank')">
-      <div class="movie-thumb" style="background:${m.bg}; font-size:3rem;">${m.emoji}</div>
-      <div class="movie-info">
+  if(!grid) return;
+  grid.innerHTML = items.map(m => `
+    <div class="movie-card" onclick="window.open('${m.url}', '_blank')">
+      <img src="${m.cover}" alt="${m.title}" class="movie-cover" onerror="this.src='https://via.placeholder.com/300x450?text=No+Cover'">
+      <div class="movie-hover-info">
         <div class="movie-genre-tag">${m.genre}</div>
         <div class="movie-title">${m.title}</div>
-        ${m.titleEn ? `<div class="movie-title-th">${m.titleEn}</div>` : '<div class="movie-title-th" style="height:1.1rem"></div>'}
-        <div class="movie-meta">
-          <span>${m.level} · ปีการศึกษา ${m.year}</span>
-          <span class="movie-year">${m.year}</span>
-        </div>
+        <div class="movie-meta"><span class="movie-year">${m.year}</span></div>
       </div>
     </div>
   `).join('');
 }
 
 function filterMovies(genre, btn) {
-  currentFilter = genre;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderMovies(genre);
-  document.getElementById('movies').scrollIntoView({ behavior: 'smooth' });
+  if(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  if(genre === 'ALL') {
+    renderMovies(movies);
+  } else {
+    renderMovies(movies.filter(m => m.genre === genre));
+  }
 }
 
-renderMovies('ALL');
+function handleSearch(val) {
+  const query = val.toLowerCase().trim();
+  const filtered = movies.filter(m => m.title.toLowerCase().includes(query) || m.genre.toLowerCase().includes(query));
+  renderMovies(filtered);
+}
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// Initial render
+renderMovies(movies);
 </script>
+
 </body>
 </html>
